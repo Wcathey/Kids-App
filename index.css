@@ -70,13 +70,16 @@ body {
     border-radius: 10px;
     background-color: white;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Ensures it doesn't overflow on small screens */
 }
 
 /* Background Image */
 #coloringImage {
     width: 100%;
+    height: auto;
     display: block;
     border-radius: 10px;
+    max-height: 80vh; /* Prevents the image from being too tall */
 }
 
 /* Transparent Canvas */
@@ -127,7 +130,12 @@ body {
     }
 
     .canvas-container {
-        width: 95%;
+        width: 90%;
+        max-height: 70vh; /* Keeps it from being too big */
         margin-top: 15px;
+    }
+
+    #coloringImage {
+        max-height: 60vh; /* Limits image height so it fits nicely */
     }
 }
