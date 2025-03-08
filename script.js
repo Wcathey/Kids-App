@@ -1,95 +1,80 @@
-const canvas = document.getElementById('drawingCanvas');
-const ctx = canvas.getContext('2d');
-const colorPicker = document.getElementById('colorPicker');
-const toolPicker = document.getElementById('toolPicker');
-const clearBtn = document.getElementById('clearBtn');
-const eraserBtn = document.getElementById('eraserBtn');
-const imagePicker = document.getElementById('imagePicker');
-const coloringImage = document.getElementById('coloringImage');
+// Get elements
+const canvas = document.getElementById("drawingCanvas");
+const ctx = canvas.getContext("2d");
+const image = document.getElementById("coloringImage");
+const colorPicker = document.getElementById("colorPicker");
+const brushSize = document.getElementById("brushSize");
+const eraserBtn = document.getElementById("eraserBtn");
+const clearBtn = document.getElementById("clearBtn");
 
 let painting = false;
-let eraserMode = false;
+let erasing = false;
 
 // Resize canvas to match image
 function resizeCanvas() {
-    canvas.width = coloringImage.width;
-    canvas.height = coloringImage.height;
+    const container = document.querySelector(".canvas-container");
+    canvas.width = container.clientWidth;
+    canvas.height = container.clientHeight;
 }
-window.addEventListener('load', resizeCanvas);
-window.addEventListener('resize', resizeCanvas);
 
-// Change image and resize canvas
-imagePicker.addEventListener('change', () => {
-    coloringImage.src = imagePicker.value;
+// Ensure canvas is always correct size
+window.addEventListener("resize", resizeCanvas);
+window.addEventListener("load", () => {
+    resizeCanvas();
+    ctx.lineCap = "round";
 });
 
-// Get Brush Settings
-function getBrushSettings() {
-    if (eraserMode) {
-        return { size: 20, erase: true };
-    }
+// Start drawing
+canvas.addEventListener("mousedown", startPosition);
+canvas.addEventListener("mouseup", stopPosition);
+canvas.addEventListener("mousemove", draw);
 
-    const tool = toolPicker.value;
-    switch (tool) {
-        case "pencil":
-            return { size: 2, opacity: 1.0, color: colorPicker.value, erase: false };
-        case "marker":
-            return { size: 10, opacity: 1.0, color: colorPicker.value, erase: false };
-        case "pastel":
-            return { size: 15, opacity: 0.3, color: colorPicker.value, erase: false };
-        default:
-            return { size: 5, opacity: 1.0, color: colorPicker.value, erase: false };
-    }
-}
+// Touch support for mobile
+canvas.addEventListener("touchstart", (e) => startPosition(e.touches[0]));
+canvas.addEventListener("touchend", stopPosition);
+canvas.addEventListener("touchmove", (e) => {
+    e.preventDefault(); // Prevents screen from moving
+    draw(e.touches[0]);
+});
 
-// Start and Stop Painting
+// Start drawing
 function startPosition(e) {
     painting = true;
-    draw(e);
+    ctx.beginPath();
+    ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
 }
-function endPosition() {
+
+// Stop drawing
+function stopPosition() {
     painting = false;
     ctx.beginPath();
 }
+
+// Drawing function
 function draw(e) {
     if (!painting) return;
+    
+    ctx.lineWidth = brushSize.value;
+    ctx.lineCap = "round";
 
-    let x = e.clientX || e.touches[0].clientX;
-    let y = e.clientY || e.touches[0].clientY;
-    const brush = getBrushSettings();
-
-    ctx.lineWidth = brush.size;
-    ctx.lineCap = 'round';
-
-    if (brush.erase) {
-        ctx.globalCompositeOperation = "destination-out"; // Erase strokes
+    if (erasing) {
+        ctx.globalCompositeOperation = "destination-out"; // Makes strokes transparent
     } else {
         ctx.globalCompositeOperation = "source-over"; // Normal drawing
-        ctx.globalAlpha = brush.opacity;
-        ctx.strokeStyle = brush.color;
+        ctx.strokeStyle = colorPicker.value;
     }
 
-    ctx.lineTo(x - canvas.offsetLeft, y - canvas.offsetTop);
+    ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
     ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x - canvas.offsetLeft, y - canvas.offsetTop);
 }
 
-// Mouse & Touch Events
-canvas.addEventListener('mousedown', startPosition);
-canvas.addEventListener('mouseup', endPosition);
-canvas.addEventListener('mousemove', draw);
-canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startPosition(e); });
-canvas.addEventListener('touchend', endPosition);
-canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); });
-
-// Eraser Button Toggle
-eraserBtn.addEventListener('click', () => {
-    eraserMode = !eraserMode;
-    eraserBtn.textContent = eraserMode ? "Drawing Mode" : "Eraser";
+// Toggle eraser mode
+eraserBtn.addEventListener("click", () => {
+    erasing = !erasing;
+    eraserBtn.style.backgroundColor = erasing ? "#d43f3f" : "#ff4444";
 });
 
-// Clear Button (Only Clears Drawings)
-clearBtn.addEventListener('click', () => {
+// Clear canvas
+clearBtn.addEventListener("click", () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 });
