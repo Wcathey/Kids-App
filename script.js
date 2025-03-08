@@ -32,21 +32,20 @@ loadImage();
 
 // Define Brush Styles
 function getBrushSettings() {
-    const tool = toolPicker.value;
-    
     if (eraserMode) {
-        return { size: 20, opacity: 1.0, color: "white" };
+        return { size: 20, erase: true };
     }
 
+    const tool = toolPicker.value;
     switch (tool) {
         case "pencil":
-            return { size: 2, opacity: 1.0, color: colorPicker.value };
+            return { size: 2, opacity: 1.0, color: colorPicker.value, erase: false };
         case "marker":
-            return { size: 10, opacity: 1.0, color: colorPicker.value };
+            return { size: 10, opacity: 1.0, color: colorPicker.value, erase: false };
         case "pastel":
-            return { size: 15, opacity: 0.3, color: colorPicker.value }; // Transparent effect
+            return { size: 15, opacity: 0.3, color: colorPicker.value, erase: false };
         default:
-            return { size: 5, opacity: 1.0, color: colorPicker.value };
+            return { size: 5, opacity: 1.0, color: colorPicker.value, erase: false };
     }
 }
 
@@ -67,9 +66,16 @@ function draw(e) {
     const brush = getBrushSettings();
 
     ctx.lineWidth = brush.size;
-    ctx.globalAlpha = brush.opacity; // Control opacity for pastel effect
     ctx.lineCap = 'round';
-    ctx.strokeStyle = brush.color;
+
+    if (brush.erase) {
+        ctx.globalCompositeOperation = "destination-out"; // Erase mode
+        ctx.strokeStyle = "rgba(0,0,0,1)"; // Doesn't matter, as it's erasing
+    } else {
+        ctx.globalCompositeOperation = "source-over"; // Normal drawing mode
+        ctx.globalAlpha = brush.opacity;
+        ctx.strokeStyle = brush.color;
+    }
 
     ctx.lineTo(x - canvas.offsetLeft, y - canvas.offsetTop);
     ctx.stroke();
