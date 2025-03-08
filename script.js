@@ -1,6 +1,7 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const colorPicker = document.getElementById('colorPicker');
+const toolPicker = document.getElementById('toolPicker');
 const clearBtn = document.getElementById('clearBtn');
 const eraserBtn = document.getElementById('eraserBtn');
 const imagePicker = document.getElementById('imagePicker');
@@ -29,6 +30,26 @@ function loadImage() {
 imagePicker.addEventListener('change', loadImage);
 loadImage();
 
+// Define Brush Styles
+function getBrushSettings() {
+    const tool = toolPicker.value;
+    
+    if (eraserMode) {
+        return { size: 20, opacity: 1.0, color: "white" };
+    }
+
+    switch (tool) {
+        case "pencil":
+            return { size: 2, opacity: 1.0, color: colorPicker.value };
+        case "marker":
+            return { size: 10, opacity: 1.0, color: colorPicker.value };
+        case "pastel":
+            return { size: 15, opacity: 0.3, color: colorPicker.value }; // Transparent effect
+        default:
+            return { size: 5, opacity: 1.0, color: colorPicker.value };
+    }
+}
+
 // Start and Stop Painting
 function startPosition(e) {
     painting = true;
@@ -43,10 +64,12 @@ function draw(e) {
 
     let x = e.clientX || e.touches[0].clientX;
     let y = e.clientY || e.touches[0].clientY;
+    const brush = getBrushSettings();
 
-    ctx.lineWidth = 10;
+    ctx.lineWidth = brush.size;
+    ctx.globalAlpha = brush.opacity; // Control opacity for pastel effect
     ctx.lineCap = 'round';
-    ctx.strokeStyle = eraserMode ? 'white' : colorPicker.value; // Eraser paints white
+    ctx.strokeStyle = brush.color;
 
     ctx.lineTo(x - canvas.offsetLeft, y - canvas.offsetTop);
     ctx.stroke();
@@ -65,7 +88,7 @@ canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); });
 // Eraser Button Toggle
 eraserBtn.addEventListener('click', () => {
     eraserMode = !eraserMode;
-    eraserBtn.textContent = eraserMode ? "Drawing Mode" : "Eraser"; // Toggle button text
+    eraserBtn.textContent = eraserMode ? "Drawing Mode" : "Eraser";
 });
 
 // Clear Button (Keeps Background Image)
