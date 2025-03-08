@@ -1,35 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coloring App</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <h1>Coloring App</h1>
+<div class="container">
+    <label for="imagePicker">Choose a page:</label>
+    <select id="imagePicker">
+        <option value="images/page1.png">Page 1</option>
+        <option value="images/page2.png">Page 2</option>
+    </select>
 
-    <div class="toolbar">
-        <label for="imagePicker">Choose a page:</label>
-        <select id="imagePicker">
-            <option value="images/motorcycle.png">Motorcycle</option>
-            <option value="images/truck.png">Truck</option>
-            <option value="images/tune-up.png">Tune Up</option>
-            <option value="images/Hot-Wheels-Symbol-.png">Hot Wheels Logo</option>
-
-        </select>
-         <label for="toolPicker">Tool:</label>
+    <label for="toolPicker">Tool:</label>
     <select id="toolPicker">
         <option value="pencil">Pencil</option>
         <option value="marker">Marker</option>
         <option value="pastel">Pastel</option>
     </select>
-        <input type="color" id="colorPicker">
-         <button id="eraserBtn">Eraser</button>
-        <button id="clearBtn">Clear</button>
-    </div>
 
-    <canvas id="canvas"></canvas>
-    <script src="script.js"></script>
-</body>
-</html>
+    <input type="color" id="colorPicker">
+    <button id="eraserBtn">Eraser</button>
+    <button id="clearBtn">Clear</button>
+</div>
+
+<!-- Wrapper for Image and Transparent Canvas -->
+<div class="canvas-container">
+    <img id="coloringImage" src="images/page1.png" alt="Coloring Page">
+    <canvas id="drawingCanvas"></canvas>
+</div>
