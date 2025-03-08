@@ -1,36 +1,29 @@
-const canvas = document.getElementById('canvas');
+const canvas = document.getElementById('drawingCanvas');
 const ctx = canvas.getContext('2d');
 const colorPicker = document.getElementById('colorPicker');
 const toolPicker = document.getElementById('toolPicker');
 const clearBtn = document.getElementById('clearBtn');
 const eraserBtn = document.getElementById('eraserBtn');
 const imagePicker = document.getElementById('imagePicker');
+const coloringImage = document.getElementById('coloringImage');
 
 let painting = false;
 let eraserMode = false;
-let backgroundImage = new Image();
 
-// Resize canvas dynamically
+// Resize canvas to match image
 function resizeCanvas() {
-    canvas.width = window.innerWidth * 0.9;
-    canvas.height = window.innerHeight * 0.6;
-    loadImage();
+    canvas.width = coloringImage.width;
+    canvas.height = coloringImage.height;
 }
-resizeCanvas();
+window.addEventListener('load', resizeCanvas);
 window.addEventListener('resize', resizeCanvas);
 
-// Load and Draw Image on Canvas
-function loadImage() {
-    backgroundImage.src = imagePicker.value;
-    backgroundImage.onload = function () {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-    };
-}
-imagePicker.addEventListener('change', loadImage);
-loadImage();
+// Change image and resize canvas
+imagePicker.addEventListener('change', () => {
+    coloringImage.src = imagePicker.value;
+});
 
-// Define Brush Styles
+// Get Brush Settings
 function getBrushSettings() {
     if (eraserMode) {
         return { size: 20, erase: true };
@@ -69,10 +62,9 @@ function draw(e) {
     ctx.lineCap = 'round';
 
     if (brush.erase) {
-        ctx.globalCompositeOperation = "destination-out"; // Erase mode
-        ctx.strokeStyle = "rgba(0,0,0,1)"; // Doesn't matter, as it's erasing
+        ctx.globalCompositeOperation = "destination-out"; // Erase strokes
     } else {
-        ctx.globalCompositeOperation = "source-over"; // Normal drawing mode
+        ctx.globalCompositeOperation = "source-over"; // Normal drawing
         ctx.globalAlpha = brush.opacity;
         ctx.strokeStyle = brush.color;
     }
@@ -97,8 +89,7 @@ eraserBtn.addEventListener('click', () => {
     eraserBtn.textContent = eraserMode ? "Drawing Mode" : "Eraser";
 });
 
-// Clear Button (Keeps Background Image)
+// Clear Button (Only Clears Drawings)
 clearBtn.addEventListener('click', () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
 });
