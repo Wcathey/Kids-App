@@ -5,30 +5,35 @@ body {
     background-color: #f5f5f5;
     margin: 0;
     padding: 0;
-    overflow: hidden; /* Stops screen from moving */
-    touch-action: none; /* Prevents scrolling while drawing */
+    overflow: hidden; /* Prevents scrolling */
+    touch-action: none; /* Stops scrolling when drawing */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
 }
 
 /* Toolbar */
 .container {
-    margin: 10px auto;
+    width: 100%;
+    height: 15vh; /* Keeps it at the top and readable */
     padding: 10px;
-    max-width: 800px;
     background: #fff;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     gap: 10px;
+    border-bottom: 2px solid #ccc;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .container label,
 .container select,
 .container input,
 .container button {
-    font-size: 16px;
+    font-size: 18px;
     padding: 8px;
     border-radius: 5px;
     border: 1px solid #ccc;
@@ -68,25 +73,22 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    max-width: 90vw;
-    max-height: 70vh;
+    width: 80vw; /* 80% of screen width */
+    height: 80vh; /* Prevents overflow */
     margin: 10px auto;
     border: 2px solid #ddd;
     border-radius: 10px;
     background-color: white;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    user-select: none; /* Prevents accidental text selection */
 }
 
 /* Background Image */
 #coloringImage {
     width: 100%;
-    height: auto;
+    height: 100%;
     display: block;
     border-radius: 10px;
-    max-width: 90vw; /* Prevents it from being too wide */
-    max-height: 70vh; /* Prevents it from being too tall */
     object-fit: contain;
 }
 
@@ -97,57 +99,51 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: all; /* Allows drawing */
-    touch-action: none; /* Stops scrolling on touch devices */
+    pointer-events: all; /* Enables drawing */
+    touch-action: none; /* Prevents page movement on touch devices */
 }
 
-/* ---- 📱 Mobile & Tablet Responsive Design ---- */
-@media (max-width: 1024px) {
+/* ---- 📱 Responsive Design ---- */
+
+/* Tablets */
+@media screen and (max-width: 1024px) {
     .container {
-        max-width: 600px;
+        height: 15vh;
+        font-size: 16px;
+    }
+
+    .canvas-container {
+        width: 85vw;
+        height: 75vh;
+    }
+}
+
+/* Mobile */
+@media screen and (max-width: 600px) {
+    .container {
+        flex-direction: column;
+        height: 20vh; /* Increases height slightly for readability */
     }
 
     .container label,
     .container select,
     .container input,
     .container button {
-        font-size: 14px;
-        padding: 6px;
-    }
-
-    .canvas-container {
-        max-width: 95vw;
-    }
-}
-
-/* Mobile Phones */
-@media (max-width: 600px) {
-    .container {
-        flex-direction: column;
+        font-size: 16px;
+        width: 90%;
         padding: 10px;
     }
 
-    .container label,
-    .container select,
-    .container input,
-    .container button {
-        font-size: 14px;
-        width: 90%;
-        padding: 8px;
-    }
-
     .canvas-container {
-        width: 90vw;
-        height: auto;
-        max-height: 70vh;
-        margin-top: 10px;
+        width: 85vw;
+        height: 70vh;
     }
 
     #coloringImage {
-        max-height: 60vh;
+        height: 100%;
     }
 
     #drawingCanvas {
-        max-height: 60vh;
+        height: 100%;
     }
 }
