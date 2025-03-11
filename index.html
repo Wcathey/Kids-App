@@ -1,41 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coloring App</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-
-    <div class="container">
-        <label for="imagePicker">Choose a page:</label>
-        <select id="imagePicker">
-            <option value="images/truck.png">Truck</option>
-            <option value="images/motorcycle.png">Motorcycle</option>
-            <option value="images/Hot-Wheels-Symbol.png">Hot Wheels Logo</option>
-            <option value="images/tune-up.png">Tune Up</option>
-        </select>
-
-        <label for="toolPicker">Tool:</label>
-        <select id="toolPicker">
-            <option value="pencil">Pencil</option>
-            <option value="marker">Marker</option>
-            <option value="pastel">Pastel</option>
-        </select>
-
-        <input type="color" id="colorPicker">
-        <button id="eraserBtn">Eraser</button>
-        <button id="clearBtn">Clear</button>
-    </div>
-
-    <!-- Wrapper for Image and Transparent Canvas -->
-    <div class="canvas-container">
-        <img id="coloringImage" src="images/truck.png" alt="Coloring Page">
-        <canvas id="drawingCanvas"></canvas>
-    </div>
-
-    <script src="script.js"></script>
-
-</body>
-</html>
+<div class="game-board">
+  <div class="card" data-match="1">
+    <div class="front"></div>
+    <div class="back" style="background-image: url('path-to-your-image-1.jpg');"></div>
+  </div>
+  <div class="card" data-match="1">
+    <div class="front"></div>
+    <div class="back" style="background-image: url('path-to-your-image-1.jpg');"></div>
+  </div>
+  <!-- Add more pairs as needed -->
+</div>
