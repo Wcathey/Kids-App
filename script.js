@@ -1,80 +1,57 @@
-// Get elements
-const canvas = document.getElementById("drawingCanvas");
-const ctx = canvas.getContext("2d");
-const image = document.getElementById("coloringImage");
-const colorPicker = document.getElementById("colorPicker");
-const brushSize = document.getElementById("brushSize");
-const eraserBtn = document.getElementById("eraserBtn");
-const clearBtn = document.getElementById("clearBtn");
+const cards = document.querySelectorAll('.card');
+let flippedCard = false;
+let firstCard, secondCard;
+let lockBoard = false;
 
-let painting = false;
-let erasing = false;
+function flipCard() {
+  if (lockBoard || this === firstCard) return;
 
-// Resize canvas to match image
-function resizeCanvas() {
-    const container = document.querySelector(".canvas-container");
-    canvas.width = container.clientWidth;
-    canvas.height = container.clientHeight;
+  this.classList.add('flip');
+
+  if (!flippedCard) {
+    flippedCard = true;
+    firstCard = this;
+  } else {
+    secondCard = this;
+    checkMatch();
+  }
 }
 
-// Ensure canvas is always correct size
-window.addEventListener("resize", resizeCanvas);
-window.addEventListener("load", () => {
-    resizeCanvas();
-    ctx.lineCap = "round";
-});
+function checkMatch() {
+  lockBoard = true;
+  let isMatch = firstCard.dataset.match === secondCard.dataset.match;
 
-// Start drawing
-canvas.addEventListener("mousedown", startPosition);
-canvas.addEventListener("mouseup", stopPosition);
-canvas.addEventListener("mousemove", draw);
-
-// Touch support for mobile
-canvas.addEventListener("touchstart", (e) => startPosition(e.touches[0]));
-canvas.addEventListener("touchend", stopPosition);
-canvas.addEventListener("touchmove", (e) => {
-    e.preventDefault(); // Prevents screen from moving
-    draw(e.touches[0]);
-});
-
-// Start drawing
-function startPosition(e) {
-    painting = true;
-    ctx.beginPath();
-    ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+  if (isMatch) {
+    disableCards();
+  } else {
+    unflipCards();
+  }
 }
 
-// Stop drawing
-function stopPosition() {
-    painting = false;
-    ctx.beginPath();
+function disableCards() {
+  firstCard.removeEventListener('click', flipCard);
+  secondCard.removeEventListener('click', flipCard);
+  resetBoard();
 }
 
-// Drawing function
-function draw(e) {
-    if (!painting) return;
-    
-    ctx.lineWidth = brushSize.value;
-    ctx.lineCap = "round";
-
-    if (erasing) {
-        ctx.globalCompositeOperation = "destination-out"; // Makes strokes transparent
-    } else {
-        ctx.globalCompositeOperation = "source-over"; // Normal drawing
-        ctx.strokeStyle = colorPicker.value;
-    }
-
-    ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
-    ctx.stroke();
+function unflipCards() {
+  setTimeout(() => {
+    firstCard.classList.remove('flip');
+    secondCard.classList.remove('flip');
+    resetBoard();
+  }, 1000);
 }
 
-// Toggle eraser mode
-eraserBtn.addEventListener("click", () => {
-    erasing = !erasing;
-    eraserBtn.style.backgroundColor = erasing ? "#d43f3f" : "#ff4444";
-});
+function resetBoard() {
+  [flippedCard, lockBoard] = [false, false];
+  [firstCard, secondCard] = [null, null];
+}
 
-// Clear canvas
-clearBtn.addEventListener("click", () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-});
+(function shuffle() {
+  cards.forEach(card => {
+    let randomPos = Math.floor(Math.random() * cards.length);
+    card.style.order = randomPos;
+  });
+})();
+
+cards.forEach(card => card.addEventListener('click', flipCard));
